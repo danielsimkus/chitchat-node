@@ -54,7 +54,7 @@ RedisChat.prototype.saveMessageIfNotFlood = function(data) {
             // Then send the message as normal
             that.saveMessage(data);
             that.broadcastMessage(
-                socket,
+                data.socket,
                 data.room,
                 data.user,
                 data.message,
@@ -67,7 +67,7 @@ RedisChat.prototype.saveMessageIfNotFlood = function(data) {
                 that.client.expire('chitchat_floodcount_' + data.socket.id, that.floodInterval);
                 // Send a message just to that user
                 that.broadcastMessage(
-                    socket,
+                    data.socket,
                     data.room,
                     data.user,
                     "[Anti-Flood] Please wait a few moments before posting again",
@@ -78,7 +78,7 @@ RedisChat.prototype.saveMessageIfNotFlood = function(data) {
                 that.client.incr('chitchat_floodcount_' + data.socket.id);
                 that.saveMessage(data);
                 that.broadcastMessage(
-                    socket,
+                    data.socket,
                     data.room,
                     data.user,
                     data.message,
