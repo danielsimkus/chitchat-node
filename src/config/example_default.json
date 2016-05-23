@@ -6,5 +6,9 @@
   "auth": {
     "secureKey": "changeMe"
   },
-  "port" : "8181"
+  "port" : "8181",
+  "floodProtection": {
+    "interval": 10,
+    "maxMessages": 3
+  }
 }

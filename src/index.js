@@ -4,7 +4,12 @@ var io = require('socket.io')(http);
 var config = require('config');
 var redisChatModel = require('./model/RedisChat.js');
 
-var RedisChat = new redisChatModel(config.get('redis.hostName'), config.get('redis.port'));
+var RedisChat = new redisChatModel(
+    config.get('redis.hostName'),
+    config.get('redis.port'),
+    config.get('floodProtection.interval'),
+    config.get('floodProtection.maxMessages')
+);
 var authController = require('./controller/AuthController');
 
 app.get('/auth/create', function(req, res) {
@@ -53,9 +58,8 @@ io.on('connection', function(socket){
                 return false;
             }
         }
-        RedisChat.saveMessage(room, user, message)
-        socket.emit('message', { room: room, message: { user: user, message: message} });
-        socket.broadcast.emit('message', { room: room, message: { user: user, message: message} });
+
+        RedisChat.sendMessage(room, user, message, socket);
     });
 
     socket.on('loadMessages', function(room) {
